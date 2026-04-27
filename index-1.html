@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRADER — Journal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">TRADER</span>
+      <span class="logo-sub">NO EMOTIONS. JUST CHARTS.</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link active" data-page="dashboard" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">◈</span> Dashboard
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="new-trade" onclick="showPage('new-trade',this)">
+        <span class="nav-icon">＋</span> New Trade
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="journal" onclick="showPage('journal',this)">
+        <span class="nav-icon">◧</span> Trade Log
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="analytics" onclick="showPage('analytics',this)">
+        <span class="nav-icon">◫</span> Analytics
+      </a></li>
+      <li><a href="#" class="nav-link" data-page="quotes" onclick="showPage('quotes',this)">
+        <span class="nav-icon">❝</span> Wisdom
+      </a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="discipline-tag">DISCIPLINE OVER IMPULSE</div>
+    </div>
+  </nav>
+
+  <!-- MOBILE TOPBAR -->
+  <header class="topbar">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <span class="topbar-title">TRADER</span>
+    <span class="topbar-date" id="topbar-date"></span>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- DASHBOARD PAGE -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="live-date" id="live-date"></div>
+      </div>
+
+      <!-- QUOTE BANNER -->
+      <div class="quote-banner" id="daily-quote">
+        <span class="quote-mark">❝</span>
+        <p class="quote-text" id="quote-rotator"></p>
+        <span class="quote-author" id="quote-author"></span>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Trades</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-card win">
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-value" id="stat-winrate">0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net P&L</div>
+          <div class="stat-value" id="stat-pnl">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Best Trade</div>
+          <div class="stat-value" id="stat-best">$0.00</div>
+        </div>
+        <div class="stat-card loss">
+          <div class="stat-label">Worst Trade</div>
+          <div class="stat-value" id="stat-worst">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg R:R</div>
+          <div class="stat-value" id="stat-rr">0:0</div>
+        </div>
+      </div>
+
+      <!-- PNL CHART -->
+      <div class="chart-section">
+        <h2 class="section-title">Cumulative P&L</h2>
+        <canvas id="pnl-chart" height="200"></canvas>
+      </div>
+
+      <!-- RECENT TRADES -->
+      <div class="recent-section">
+        <h2 class="section-title">Recent Trades</h2>
+        <div id="recent-trades-list" class="recent-list"></div>
+      </div>
+    </section>
+
+    <!-- NEW TRADE PAGE -->
+    <section class="page" id="page-new-trade">
+      <div class="page-header">
+        <h1 class="page-title">Log a Trade</h1>
+      </div>
+      <div class="form-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Ticker / Pair</label>
+            <input type="text" id="f-ticker" placeholder="e.g. AAPL, BTC/USD" />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="f-date" />
+          </div>
+          <div class="form-group">
+            <label>Direction</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="btn-long" onclick="setDir('LONG')">LONG</button>
+              <button class="toggle-btn" id="btn-short" onclick="setDir('SHORT')">SHORT</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Market</label>
+            <select id="f-market">
+              <option>Stocks</option>
+              <option>Forex</option>
+              <option>Crypto</option>
+              <option>Options</option>
+              <option>Futures</option>
+              <option>Indices</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Entry Price</label>
+            <input type="number" id="f-entry" placeholder="0.00" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Exit Price</label>
+            <input type="number" id="f-exit" placeholder="0.00" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Position Size</label>
+            <input type="number" id="f-size" placeholder="1" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Stop Loss</label>
+            <input type="number" id="f-sl" placeholder="0.00" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Take Profit</label>
+            <input type="number" id="f-tp" placeholder="0.00" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Outcome</label>
+            <select id="f-outcome">
+              <option value="WIN">WIN</option>
+              <option value="LOSS">LOSS</option>
+              <option value="BREAKEVEN">BREAKEVEN</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label>Setup / Strategy</label>
+            <input type="text" id="f-setup" placeholder="e.g. Breakout, Support Bounce, EMA Crossover..." />
+          </div>
+          <div class="form-group full-width">
+            <label>Emotions & Notes</label>
+            <textarea id="f-notes" rows="4" placeholder="What were you thinking? Did you follow your plan? Any lessons?"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label>Mistakes (if any)</label>
+            <input type="text" id="f-mistakes" placeholder="e.g. Moved stop loss, sized too large, FOMO entry..." />
+          </div>
+          <div class="form-group full-width">
+            <label>Rating (1–10)</label>
+            <div class="rating-row">
+              <input type="range" id="f-rating" min="1" max="10" value="5" oninput="document.getElementById('rating-val').textContent=this.value" />
+              <span class="rating-display" id="rating-val">5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE CALC -->
+        <div class="calc-box" id="live-calc">
+          <div class="calc-row"><span>P&L:</span><strong id="calc-pnl">—</strong></div>
+          <div class="calc-row"><span>R:R:</span><strong id="calc-rr">—</strong></div>
+          <div class="calc-row"><span>Return:</span><strong id="calc-ret">—</strong></div>
+        </div>
+
+        <button class="submit-btn" onclick="saveTrade()">⟶ LOG TRADE</button>
+      </div>
+    </section>
+
+    <!-- TRADE LOG PAGE -->
+    <section class="page" id="page-journal">
+      <div class="page-header">
+        <h1 class="page-title">Trade Log</h1>
+        <div class="filter-bar">
+          <input type="text" id="search-trades" placeholder="Search ticker..." oninput="renderTradeLog()" />
+          <select id="filter-outcome" onchange="renderTradeLog()">
+            <option value="">All</option>
+            <option value="WIN">Wins</option>
+            <option value="LOSS">Losses</option>
+            <option value="BREAKEVEN">Breakeven</option>
+          </select>
+          <select id="filter-market" onchange="renderTradeLog()">
+            <option value="">All Markets</option>
+            <option>Stocks</option>
+            <option>Forex</option>
+            <option>Crypto</option>
+            <option>Options</option>
+            <option>Futures</option>
+            <option>Indices</option>
+          </select>
+          <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
+        </div>
+      </div>
+      <div id="trade-log-container"></div>
+    </section>
+
+    <!-- ANALYTICS PAGE -->
+    <section class="page" id="page-analytics">
+      <div class="page-header">
+        <h1 class="page-title">Analytics</h1>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>Win / Loss / BE</h3>
+          <canvas id="donut-chart" height="220"></canvas>
+        </div>
+        <div class="analytics-card">
+          <h3>P&L by Market</h3>
+          <canvas id="market-chart" height="220"></canvas>
+        </div>
+        <div class="analytics-card wide">
+          <h3>Trade Quality Distribution</h3>
+          <canvas id="rating-chart" height="180"></canvas>
+        </div>
+        <div class="analytics-card">
+          <h3>Top Performers</h3>
+          <div id="top-performers"></div>
+        </div>
+        <div class="analytics-card">
+          <h3>Common Mistakes</h3>
+          <div id="mistake-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WISDOM PAGE -->
+    <section class="page" id="page-quotes">
+      <div class="page-header">
+        <h1 class="page-title">Trader's Wisdom</h1>
+      </div>
+      <div class="quotes-grid" id="quotes-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- TRADE DETAIL MODAL -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
